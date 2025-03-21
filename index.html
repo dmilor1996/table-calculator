@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор размеров стола</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-table"></i> Калькулятор размеров стола</h1>
+        <form id="tableForm">
+            <div class="input-group">
+                <label for="topDiameter">Диаметр столешницы (мм):</label>
+                <input type="number" id="topDiameter" value="900" required>
+            </div>
+            <div class="input-group">
+                <label for="topThickness">Толщина столешницы (мм):</label>
+                <input type="number" id="topThickness" value="20" required>
+            </div>
+            <div class="input-group">
+                <label for="tableHeight">Высота стола (мм):</label>
+                <input type="number" id="tableHeight" value="748" required>
+            </div>
+            <div class="input-group">
+                <label for="baseDiameter">Диаметр подстолья (мм):</label>
+                <input type="number" id="baseDiameter" value="400" required>
+            </div>
+            <div class="input-group">
+                <label for="railDiameter">Диаметр реек (мм):</label>
+                <input type="number" id="railDiameter" value="15" required>
+            </div>
+            <div class="input-group">
+                <label for="cutterDiameter">Диаметр фрезы (мм):</label>
+                <input type="number" id="cutterDiameter" value="4" required>
+            </div>
+            <div class="input-group">
+                <label for="topMaterial">Материал столешницы:</label>
+                <select id="topMaterial">
+                    <option value="beech">Бук</option>
+                    <option value="oak">Дуб</option>
+                    <option value="ash">Ясень</option>
+                    <option value="plywood">Фанера</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="railMaterial">Материал реек:</label>
+                <select id="railMaterial">
+                    <option value="oak">Дуб</option>
+                    <option value="beech">Бук</option>
+                </select>
+            </div>
+            <button type="submit">Рассчитать</button>
+        </form>
 
+        <div id="results" class="results hidden">
+            <h2>Результаты расчётов</h2>
+            <p><strong>Паз на нижней крышке:</strong></p>
+            <p>Внешний диаметр: <span id="grooveOuterDiam"></span> мм</p>
+            <p>Внутренний диаметр: <span id="grooveInnerDiam"></span> мм</p>
+            <p>Внутренний радиус: <span id="grooveInnerRadius"></span> мм</p>
+            <p><strong>Крышка Б:</strong></p>
+            <p>Диаметр: <span id="coverBDiam"></span> мм</p>
+            <p><strong>Промежуточная крышка:</strong></p>
+            <p>Диаметр: <span id="midCoverDiam"></span> мм</p>
+            <p><strong>Лист ДВП:</strong></p>
+            <p>Длина: <span id="fiberboardLength"></span> мм</p>
+            <p>Высота: <span id="fiberboardHeight"></span> мм</p>
+            <p><strong>Основные бруски (4 шт):</strong></p>
+            <p>Высота: <span id="mainBeamHeight"></span> мм</p>
+            <p><strong>Поперечные бруски (2 шт):</strong></p>
+            <p>Длина: <span id="crossBeamLength"></span> мм</p>
+            <p><strong>Рейки:</strong></p>
+            <p>Количество: <span id="railCount"></span> шт</p>
+            <p>Высота: <span id="railHeight"></span> мм</p>
+            <p><strong>Вес:</strong></p>
+            <p>Общий вес стола: <span id="totalWeight"></span> кг</p>
+            <p>Вес столешницы: <span id="topWeight"></span> кг</p>
+            <p>Вес подстолья: <span id="baseWeight"></span> кг</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
