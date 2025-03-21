@@ -28,23 +28,32 @@ document.getElementById('tableForm').addEventListener('submit', function(e) {
     };
 
     // Расчёты
-    const grooveOuterDiam = baseDiameter;
+    // 1. Паз на нижней крышке
+    const grooveOuterDiam = baseDiameter - 2 * (railDiameter + fiberboardThickness) + cutterDiameter;
     const grooveInnerDiam = baseDiameter - 2 * (railDiameter + fiberboardThickness);
     const grooveInnerRadius = grooveInnerDiam / 2;
 
+    // 2. Крышка Б
     const coverBDiam = grooveInnerDiam;
 
+    // 3. Промежуточная крышка
     let midCoverDiam = Math.max(baseDiameter * 1.15, topDiameter * 0.55);
     midCoverDiam = Math.ceil(midCoverDiam / 5) * 5;
 
-    const fiberboardHeight = tableHeight - topThickness - 2 * plywoodThickness - grooveDepth;
-    const fiberboardLength = Math.PI * grooveInnerDiam;
+    // 4. Лист ДВП
+    const fiberboardHeight = tableHeight - topThickness - 2 * plywoodThickness + grooveDepth;
+    const fiberboardOuterDiam = grooveInnerDiam + 2 * fiberboardThickness;
+    const fiberboardLength = Math.PI * fiberboardOuterDiam;
 
+    // 5. Основные бруски
     const mainBeamHeight = tableHeight - topThickness - 3 * plywoodThickness;
-    const crossBeamLength = (grooveInnerDiam - 2 * beamSize) / Math.sqrt(2);
 
-    const railHeight = fiberboardHeight;
-    const railCount = Math.floor(Math.PI * grooveInnerDiam / (railDiameter + 0.2));
+    // 6. Поперечные бруски
+    const crossBeamLength = grooveInnerDiam - 2 * beamSize;
+
+    // 7. Рейки
+    const railHeight = tableHeight - topThickness - 2 * plywoodThickness;
+    const railCount = Math.floor((Math.PI * baseDiameter) / (railDiameter + 0.2));
 
     // Расчёт веса
     const topVolume = (Math.PI * (topDiameter / 2) ** 2 * topThickness) / 1000000; // м³
