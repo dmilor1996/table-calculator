@@ -27,24 +27,24 @@
                 <label for="baseDiameter">Диаметр подстолья (мм):</label>
                 <input type="number" id="baseDiameter" value="400" required>
             </div>
+
             <div class="input-group">
-                <div class="input-group">
-            <label for="beamWidth">Ширина основных брусков (мм):</label>
-            <input type="number" id="beamWidth" value="40" required>
-        </div>
-        <div class="input-group">
-            <label for="beamThickness">Толщина основных брусков (мм):</label>
-            <input type="number" id="beamThickness" value="40" required>
-        </div>
-        <div class="input-group">
-            <label for="railWidth">Ширина реек (мм):</label>
-            <input type="number" id="railWidth" value="15" required>
-        </div>
-        <div class="input-group">
-            <label for="railThickness">Толщина реек (мм):</label>
-            <input type="number" id="railThickness" value="15" required>
-        </div>
-                 </div>
+                <label for="beamWidth">Ширина основных брусков (мм):</label>
+                <input type="number" id="beamWidth" value="40" required>
+            </div>
+            <div class="input-group">
+                <label for="beamThickness">Толщина основных брусков (мм):</label>
+                <input type="number" id="beamThickness" value="40" required>
+            </div>
+            <div class="input-group">
+                <label for="railWidth">Ширина реек (мм):</label>
+                <input type="number" id="railWidth" value="15" required>
+            </div>
+            <div class="input-group">
+                <label for="railThickness">Толщина реек (мм):</label>
+                <input type="number" id="railThickness" value="15" required>
+            </div>
+
             <div class="input-group">
                 <label for="cutterDiameter">Диаметр фрезы (мм):</label>
                 <input type="number" id="cutterDiameter" value="4" required>
@@ -74,20 +74,29 @@
             <p>Внешний диаметр: <span id="grooveOuterDiam"></span> мм</p>
             <p>Внутренний диаметр: <span id="grooveInnerDiam"></span> мм</p>
             <p>Внутренний радиус: <span id="grooveInnerRadius"></span> мм</p>
+
             <p><strong>Крышка Б:</strong></p>
             <p>Диаметр: <span id="coverBDiam"></span> мм</p>
+
             <p><strong>Промежуточная крышка:</strong></p>
             <p>Диаметр: <span id="midCoverDiam"></span> мм</p>
+
             <p><strong>Лист ДВП:</strong></p>
             <p>Длина: <span id="fiberboardLength"></span> мм</p>
             <p>Высота: <span id="fiberboardHeight"></span> мм</p>
+
             <p><strong>Основные бруски (4 шт):</strong></p>
             <p>Высота: <span id="mainBeamHeight"></span> мм</p>
-            <p><strong>Поперечные бруски (2 шт):</strong></p>
-            <p>Длина: <span id="crossBeamLength"></span> мм</p>
+
+            <p><strong>Поперечные бруски:</strong></p>
+            <p>По оси X: <span id="crossBeamLengthX"></span> мм</p>
+            <p>По оси Y: <span id="crossBeamLengthY"></span> мм</p>
+            <p>(Старое поле для совместимости: <span id="crossBeamLength"></span> мм)</p>
+
             <p><strong>Рейки:</strong></p>
             <p>Количество: <span id="railCount"></span> шт</p>
             <p>Высота: <span id="railHeight"></span> мм</p>
+
             <p><strong>Вес:</strong></p>
             <p>Общий вес стола: <span id="totalWeight"></span> кг</p>
             <p>Вес столешницы: <span id="topWeight"></span> кг</p>
