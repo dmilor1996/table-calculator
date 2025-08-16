@@ -49,6 +49,14 @@
                 <label for="cutterDiameter">Диаметр фрезы (мм):</label>
                 <input type="number" id="cutterDiameter" value="6" required>
             </div>
+
+            <!-- Новый параметр: зазор ленты ДВП (может быть отрицательным для натяжки) -->
+            <div class="input-group">
+                <label for="fiberboardGap">Зазор ленты ДВП (мм):</label>
+                <input type="number" id="fiberboardGap" value="-0.50" step="0.01" required>
+                <small>Отрицательное значение — лента короче, чтобы натянуть без нахлёста.</small>
+            </div>
+
             <div class="input-group">
                 <label for="topMaterial">Материал столешницы:</label>
                 <select id="topMaterial">
@@ -90,7 +98,6 @@
 
             <p><strong>Поперечные бруски:</strong></p>
             <p>Длина поперечины: <span id="crossBeamLength"></span> мм</p>
-
 
             <p><strong>Рейки:</strong></p>
             <p>Количество: <span id="railCount"></span> шт</p>
