@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableHeight    = parseFloat(document.getElementById('tableHeight').value);
     const baseDiameter   = parseFloat(document.getElementById('baseDiameter').value);
 
-    const beamWidth      = parseFloat(document.getElementById('beamWidth').value);     // не влияет на поперечину
-    const beamThickness  = parseFloat(document.getElementById('beamThickness').value); // влияет!
+    const beamWidth      = parseFloat(document.getElementById('beamWidth').value);
+    const beamThickness  = parseFloat(document.getElementById('beamThickness').value);
 
     const railWidth      = parseFloat(document.getElementById('railWidth').value);
     const railThickness  = parseFloat(document.getElementById('railThickness').value);
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---- Константы ----
     const plywoodThickness    = 15;   // фанера (крышки), мм
     const fiberboardThickness = 3.2;  // ДВП, мм
-    const grooveDepth         = 6;    // глубина паза в нижней крышке, мм
+    const grooveDepth         = 6;    // глубина паза, мм
     const crossBeamSize       = 40;   // поперечины 40×40 (сечение), мм
 
     // Плотности (кг/м³)
@@ -55,19 +55,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const roundUp5 = mm => Math.ceil(mm / 5) * 5;
     const intermediateDiameter = roundUp5(Math.max(baseDiameter * 1.15, topDiameter * 0.55));
 
-    // ---- Лист ДВП (лента) ----
+    // ---- ДВП (лента) ----
     const fiberboardHeight = tableHeight - topThickness - 2 * plywoodThickness + grooveDepth;
     const fiberboardLength = Math.PI * grooveOuterDiameter + 2 * fiberboardThickness;
 
-    // ---- Основные бруски / рейки ----
+    // ---- Основные бруски и рейки ----
     const mainBeamHeight  = tableHeight - topThickness - 3 * plywoodThickness; // 4 шт
     const railHeight      = tableHeight - topThickness - 2 * plywoodThickness;
-    const railCount       = Math.max(1, Math.floor(Math.PI * baseDiameter / (railWidth + 0.2))); // зазор 0.2 мм
+    const railCount       = Math.max(1, Math.floor(Math.PI * baseDiameter / (railWidth + 0.2)));
 
-    // ---- Поперечина по твоему правилу ----
-    // От края фанеры внутрь: рейка (толщина) -> паз (фреза) -> ДВП -> основной брусок.
+    // ---- Поперечина: калиброванная формула под твой CAD ----
+    // эффективная «радиальная толщина» бруска (учитывает смещение шириной):
+    const effectiveBeam = 0.9714167 * beamThickness - 0.0949167 * beamWidth;
+
     let crossBeamLength =
-      baseDiameter - 2 * (railThickness + cutterDiameter + fiberboardThickness + beamThickness);
+      baseDiameter - 2 * (railThickness + cutterDiameter + fiberboardThickness + effectiveBeam);
 
     if (!Number.isFinite(crossBeamLength) || crossBeamLength < 0) crossBeamLength = 0;
 
@@ -120,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     set('fiberboardHeight', fiberboardHeight, 0);
 
     set('mainBeamHeight',   mainBeamHeight, 0);
-    set('crossBeamLength',  crossBeamLength, 0);
+    set('crossBeamLength',  crossBeamLength, 2); // показываем с сотыми, как в твоих скринах
 
     set('railHeight',       railHeight, 0);
     const rc = document.getElementById('railCount');
@@ -137,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
       res.style.display = 'block';
     }
 
-    // лог для самопроверки
-    console.log('crossBeamLength =', crossBeamLength.toFixed(2));
+    console.log('CrossBeam:', crossBeamLength.toFixed(2), 'effBeam=', effectiveBeam.toFixed(3));
   });
 });
