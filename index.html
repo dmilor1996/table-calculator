@@ -13,44 +13,50 @@
         <form id="tableForm">
             <div class="input-group">
                 <label for="topDiameter">Диаметр столешницы (мм):</label>
-                <input type="number" id="topDiameter" value="900" required>
+                <input type="number" id="topDiameter" value="900" step="0.01" required>
             </div>
             <div class="input-group">
                 <label for="topThickness">Толщина столешницы (мм):</label>
-                <input type="number" id="topThickness" value="20" required>
+                <input type="number" id="topThickness" value="20" step="0.01" required>
             </div>
             <div class="input-group">
                 <label for="tableHeight">Высота стола (мм):</label>
-                <input type="number" id="tableHeight" value="748" required>
+                <input type="number" id="tableHeight" value="748" step="0.01" required>
             </div>
             <div class="input-group">
                 <label for="baseDiameter">Диаметр подстолья (мм):</label>
-                <input type="number" id="baseDiameter" value="400" required>
+                <input type="number" id="baseDiameter" value="400" step="0.01" required>
             </div>
 
             <div class="input-group">
                 <label for="beamWidth">Ширина основных брусков (мм):</label>
-                <input type="number" id="beamWidth" value="45" required>
+                <input type="number" id="beamWidth" value="45" step="0.01" required>
             </div>
             <div class="input-group">
                 <label for="beamThickness">Толщина основных брусков (мм):</label>
-                <input type="number" id="beamThickness" value="15" required>
+                <input type="number" id="beamThickness" value="15" step="0.01" required>
             </div>
             <div class="input-group">
                 <label for="railWidth">Ширина реек (мм):</label>
-                <input type="number" id="railWidth" value="15" required>
+                <input type="number" id="railWidth" value="15" step="0.01" required>
             </div>
             <div class="input-group">
                 <label for="railThickness">Толщина реек (мм):</label>
-                <input type="number" id="railThickness" value="15" required>
+                <input type="number" id="railThickness" value="15" step="0.01" required>
+            </div>
+
+            <div class="input-group">
+                <label for="railGap">Расстояние между рейками (мм):</label>
+                <input type="number" id="railGap" value="5.00" step="0.01" required>
+                <small>Это зазор между соседними рейками по кругу.</small>
             </div>
 
             <div class="input-group">
                 <label for="cutterDiameter">Диаметр фрезы (мм):</label>
-                <input type="number" id="cutterDiameter" value="6" required>
+                <input type="number" id="cutterDiameter" value="6" step="0.01" required>
             </div>
 
-            <!-- Новый параметр: зазор ленты ДВП (может быть отрицательным для натяжки) -->
+            <!-- Зазор ленты ДВП (может быть отрицательным для натяжки) -->
             <div class="input-group">
                 <label for="fiberboardGap">Зазор ленты ДВП (мм):</label>
                 <input type="number" id="fiberboardGap" value="-0.50" step="0.01" required>
@@ -71,6 +77,7 @@
                 <select id="railMaterial">
                     <option value="beech">Бук</option>
                     <option value="oak">Дуб</option>
+                    <option value="pine">Сосна</option>
                 </select>
             </div>
             <button type="submit">Рассчитать</button>
@@ -96,11 +103,13 @@
             <p><strong>Основные бруски (4 шт):</strong></p>
             <p>Высота: <span id="mainBeamHeight"></span> мм</p>
 
-            <p><strong>Поперечные бруски:</strong></p>
+            <p><strong>Поперечные бруски (2 шт):</strong></p>
             <p>Длина поперечины: <span id="crossBeamLength"></span> мм</p>
 
             <p><strong>Рейки:</strong></p>
-            <p>Количество: <span id="railCount"></span> шт</p>
+            <p>По вашим размерам поместится: <span id="railCount"></span> шт</p>
+            <p>Остаток (между последней и первой): <span id="railLeftover"></span> мм</p>
+            <p>Рекомендуемая ширина рейки (для этого зазора): <span id="railSuggestedWidth"></span> мм</p>
             <p>Высота: <span id="railHeight"></span> мм</p>
 
             <p><strong>Вес:</strong></p>
