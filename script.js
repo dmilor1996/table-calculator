@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableHeight    = parseFloat(document.getElementById('tableHeight').value);
     const baseDiameter   = parseFloat(document.getElementById('baseDiameter').value);
 
-    const beamWidth      = parseFloat(document.getElementById('beamWidth').value);
-    const beamThickness  = parseFloat(document.getElementById('beamThickness').value);
+    const beamWidth      = parseFloat(document.getElementById('beamWidth').value);     // W (по касательной)
+    const beamThickness  = parseFloat(document.getElementById('beamThickness').value); // T (по радиусу)
 
     const railWidth      = parseFloat(document.getElementById('railWidth').value);
     const railThickness  = parseFloat(document.getElementById('railThickness').value);
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const plywoodThickness    = 15;   // фанера (крышки), мм
     const fiberboardThickness = 3.2;  // ДВП, мм
     const grooveDepth         = 6;    // глубина паза, мм
-    const crossBeamSize       = 40;   // поперечины 40×40 (сечение), мм
+    const crossBeamSize       = 40;   // поперечина 40×40 (сечение), мм
 
     // Плотности (кг/м³)
     const densities = {
@@ -59,19 +59,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const fiberboardHeight = tableHeight - topThickness - 2 * plywoodThickness + grooveDepth;
     const fiberboardLength = Math.PI * grooveOuterDiameter + 2 * fiberboardThickness;
 
-    // ---- Основные бруски и рейки ----
+    // ---- Высоты/кол-ва ----
     const mainBeamHeight  = tableHeight - topThickness - 3 * plywoodThickness; // 4 шт
     const railHeight      = tableHeight - topThickness - 2 * plywoodThickness;
-    const railCount       = Math.max(1, Math.floor(Math.PI * baseDiameter / (railWidth + 0.2)));
+    const railCount       = Math.max(1, Math.floor(Math.PI * baseDiameter / (railWidth + 0.2))); // зазор 0.2 мм
 
-    // ---- Поперечина: калиброванная формула под твой CAD ----
-    // эффективная «радиальная толщина» бруска (учитывает смещение шириной):
-    const effectiveBeam = 0.9714167 * beamThickness - 0.0949167 * beamWidth;
+    // ---- Поперечина: строгая геометрия ----
+    // Радиус касания угла бруска (внутренняя кромка паза после рейки и ДВП)
+    const Rc = (baseDiameter / 2) - railThickness - fiberboardThickness;
 
-    let crossBeamLength =
-      baseDiameter - 2 * (railThickness + cutterDiameter + fiberboardThickness + effectiveBeam);
-
-    if (!Number.isFinite(crossBeamLength) || crossBeamLength < 0) crossBeamLength = 0;
+    let crossBeamLength = 0;
+    if (Rc > 0 && beamWidth / 2 < Rc) {
+      const yOut = Math.sqrt(Rc * Rc - (beamWidth / 2) ** 2); // расстояние до угла касания вдоль радиуса
+      crossBeamLength = 2 * (yOut - beamThickness);           // между внутренними гранями двух брусков
+      if (crossBeamLength < 0) crossBeamLength = 0;
+    }
 
     // ---- Объёмы и веса ----
     const mm3_to_m3 = v => v / 1e9;
@@ -122,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     set('fiberboardHeight', fiberboardHeight, 0);
 
     set('mainBeamHeight',   mainBeamHeight, 0);
-    set('crossBeamLength',  crossBeamLength, 2); // показываем с сотыми, как в твоих скринах
+    set('crossBeamLength',  crossBeamLength, 2);
 
     set('railHeight',       railHeight, 0);
     const rc = document.getElementById('railCount');
@@ -139,6 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
       res.style.display = 'block';
     }
 
-    console.log('CrossBeam:', crossBeamLength.toFixed(2), 'effBeam=', effectiveBeam.toFixed(3));
+    console.log('Rc=', Rc.toFixed(3), 'crossBeamLength=', crossBeamLength.toFixed(2));
   });
 });
