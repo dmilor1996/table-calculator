@@ -48,18 +48,23 @@ document.addEventListener('DOMContentLoaded', () => {
       fiberboard: 800,
     };
 
-    // ---- Паз и крышки ----
-    const grooveOuterDiameter = baseDiameter - 2 * (railThickness + fiberboardThickness) + cutterDiameter;
-    const grooveInnerDiameter = baseDiameter - 2 * (railThickness + fiberboardThickness);
+    // ---- Паз и крышки (исправлено под твою схему) ----
+    // Снаружи внутрь: рейка -> ПАЗ(фреза) -> ДВП -> брусок
+    const grooveOuterDiameter = baseDiameter - 2 * railThickness;
+    const grooveInnerDiameter = baseDiameter - 2 * (railThickness + cutterDiameter);
     const innerRadius         = grooveInnerDiameter / 2;
 
+    // Крышка Б = внутренний диаметр паза
     const lidDiameter = grooveInnerDiameter;
 
+    // Промежуточная крышка: max(115% базы, 55% столешницы), округление к 5 мм вверх
     const roundUp5 = mm => Math.ceil(mm / 5) * 5;
     const intermediateDiameter = roundUp5(Math.max(baseDiameter * 1.15, topDiameter * 0.55));
 
     // ---- ДВП (лента) ----
+    // Внешний диаметр ленты = внутренний диаметр паза + 2*толщину ДВП
     const fiberboardOuterDiameter = grooveInnerDiameter + 2 * fiberboardThickness;
+    // Длина ленты — окружность по внешнему диаметру ленты, плюс технологический зазор (может быть отрицательным)
     const fiberboardLength = Math.PI * (fiberboardOuterDiameter + fiberboardGap);
     const fiberboardHeight = tableHeight - topThickness - 2 * plywoodThickness + grooveDepth;
 
@@ -68,19 +73,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const railHeight      = tableHeight - topThickness - 2 * plywoodThickness;
 
     // Расчёт реек по окружности
-    const circumference   = Math.PI * baseDiameter;       // окружность по диаметру подстолья
+    const circumference   = Math.PI * baseDiameter;       // окружность по diameter подстолья
     const desiredPitch    = railWidth + railGap;          // шаг "рейка + зазор"
-    let   railCountDry    = Math.max(1, Math.floor(circumference / desiredPitch)); // сколько влезет по вашим цифрам
-    let   leftover        = circumference - railCountDry * desiredPitch;           // лишний остаток между последней и первой
+    let   railCountDry    = Math.max(1, Math.floor(circumference / desiredPitch)); // сколько целиком влезет
+    let   leftover        = circumference - railCountDry * desiredPitch;           // остаток между последней и первой
 
-    // Рекомендуемая ширина рейки, чтобы при заданном зазоре и том же количестве (railCountDry) уложиться ровно:
+    // Рекомендуемая ширина рейки (при заданном зазоре и том же количестве) для ровного круга:
     let railSuggestedWidth = (circumference - railCountDry * railGap) / railCountDry;
-
-    // На всякий случай — если ширина получилась отрицательной (супербольшой зазор)
     if (!Number.isFinite(railSuggestedWidth) || railSuggestedWidth < 0) railSuggestedWidth = 0;
 
-    // ---- Поперечина: строгая геометрия ----
-    const Rc = (baseDiameter / 2) - railThickness - fiberboardThickness;
+    // ---- Поперечина: строгая геометрия с упором в внешнюю окружность ленты ДВП ----
+    // Радиус опоры для бруска — внешняя окружность ленты ДВП
+    const Rc = fiberboardOuterDiameter / 2;
 
     let crossBeamLength = 0;
     if (Rc > 0 && beamWidth / 2 < Rc) {
@@ -161,11 +165,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Лог для проверки
     console.log(
-      'C=', circumference.toFixed(2),
-      'N_dry=', railCountDry,
-      'leftover=', leftover.toFixed(2),
-      'suggestedWidth=', railSuggestedWidth.toFixed(2),
-      'crossBeamLength=', crossBeamLength.toFixed(2)
+      'grooveOuter=', grooveOuterDiameter.toFixed(2),
+      'grooveInner=', grooveInnerDiameter.toFixed(2),
+      'fiberOut=', fiberboardOuterDiameter.toFixed(2),
+      'fiberLen=', fiberboardLength.toFixed(2),
+      'Rc=', Rc.toFixed(2),
+      'cross=', crossBeamLength.toFixed(2)
     );
   });
 });
