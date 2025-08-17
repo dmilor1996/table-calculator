@@ -1,26 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор размеров стола</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-      .grid {
-        display: grid;
-        grid-template-columns: 1fr 320px;
-        gap: 16px;
-        align-items: start;
-      }
-      .card {
-        background:#f7f9fb;border:1px solid #e4e7eb;border-radius:12px;padding:12px;
-      }
-      .mini h3{margin:6px 0 10px;font-size:14px;color:#444}
-      .legend {font-size:12px;opacity:.85;margin-top:8px;display:flex;flex-wrap:wrap;gap:14px}
-      .legend span{display:inline-flex;align-items:center;gap:6px}
-      .sw{width:12px;height:12px;border:1px solid #0001}
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Калькулятор размеров стола</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    .card{background:#f7f9fb;border:1px solid #e4e7eb;border-radius:12px;padding:12px}
+    .legend{font-size:12px;opacity:.85;margin-top:8px;display:flex;flex-wrap:wrap;gap:14px}
+    .legend span{display:inline-flex;align-items:center;gap:6px}
+    .sw{width:12px;height:12px;border:1px solid #0001}
+  </style>
 </head>
 <body>
   <div class="container">
@@ -98,28 +89,16 @@
       <button type="submit">Рассчитать</button>
     </form>
 
-    <div class="grid" style="margin-top:16px">
-      <!-- Основной вид сверху -->
-      <div class="card">
-        <h2>Вид сверху (схема)</h2>
-        <svg id="topView" width="100%" height="420" viewBox="-210 -210 420 420"></svg>
-        <div class="legend">
-          <span><i class="sw" style="background:#c8d7ff;border-color:#5b7cff"></i>Фанера</span>
-          <span><i class="sw" style="background:#ffe6b3;border-color:#d4a200"></i>Рейки</span>
-          <span><i class="sw" style="background:#ffd1d1;border-color:#cc5c5c"></i>Паз (фреза)</span>
-          <span><i class="sw" style="background:#c9f2d1;border-color:#3fa66e"></i>ДВП</span>
-          <span><i class="sw" style="background:#bbb;border-color:#666"></i>Основные бруски</span>
-          <span><i class="sw" style="background:#999;border-color:#333"></i>Поперечина</span>
-        </div>
-      </div>
-
-      <!-- Детали: рейка и брусок -->
-      <div class="card mini">
-        <h3>Рейка (увеличено)</h3>
-        <svg id="railDetail" width="100%" height="160" viewBox="0 0 320 160"></svg>
-
-        <h3>Основной брусок (увеличено)</h3>
-        <svg id="beamDetail" width="100%" height="180" viewBox="0 0 320 180"></svg>
+    <div class="card" style="margin-top:16px">
+      <h2>Вид сверху (схема)</h2>
+      <svg id="topView" width="100%" height="460" viewBox="-210 -210 420 420"></svg>
+      <div class="legend">
+        <span><i class="sw" style="background:#c8d7ff;border-color:#5b7cff"></i>Фанера</span>
+        <span><i class="sw" style="background:#ffe6b3;border-color:#d4a200"></i>Рейки</span>
+        <span><i class="sw" style="background:#ffd1d1;border-color:#cc5c5c"></i>Паз (фреза)</span>
+        <span><i class="sw" style="background:#c9f2d1;border-color:#3fa66e"></i>ДВП</span>
+        <span><i class="sw" style="background:#bbb;border-color:#666"></i>Основные бруски</span>
+        <span><i class="sw" style="background:#999;border-color:#333"></i>Поперечина</span>
       </div>
     </div>
 
