@@ -6,135 +6,159 @@
     <title>Калькулятор размеров стола</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 16px;
+        align-items: start;
+      }
+      .card {
+        background:#f7f9fb;border:1px solid #e4e7eb;border-radius:12px;padding:12px;
+      }
+      .mini h3{margin:6px 0 10px;font-size:14px;color:#444}
+      .legend {font-size:12px;opacity:.85;margin-top:8px;display:flex;flex-wrap:wrap;gap:14px}
+      .legend span{display:inline-flex;align-items:center;gap:6px}
+      .sw{width:12px;height:12px;border:1px solid #0001}
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1><i class="fas fa-table"></i> Калькулятор размеров стола</h1>
-        <form id="tableForm">
-            <div class="input-group">
-                <label for="topDiameter">Диаметр столешницы (мм):</label>
-                <input type="number" id="topDiameter" value="900" step="0.01" required>
-            </div>
-            <div class="input-group">
-                <label for="topThickness">Толщина столешницы (мм):</label>
-                <input type="number" id="topThickness" value="20" step="0.01" required>
-            </div>
-            <div class="input-group">
-                <label for="tableHeight">Высота стола (мм):</label>
-                <input type="number" id="tableHeight" value="748" step="0.01" required>
-            </div>
-            <div class="input-group">
-                <label for="baseDiameter">Диаметр подстолья (мм):</label>
-                <input type="number" id="baseDiameter" value="400" step="0.01" required>
-            </div>
+  <div class="container">
+    <h1><i class="fas fa-table"></i> Калькулятор размеров стола</h1>
 
-            <div class="input-group">
-                <label for="beamWidth">Ширина основных брусков (мм):</label>
-                <input type="number" id="beamWidth" value="45" step="0.01" required>
-            </div>
-            <div class="input-group">
-                <label for="beamThickness">Толщина основных брусков (мм):</label>
-                <input type="number" id="beamThickness" value="15" step="0.01" required>
-            </div>
+    <form id="tableForm">
+      <div class="input-group">
+        <label for="topDiameter">Диаметр столешницы (мм):</label>
+        <input type="number" id="topDiameter" value="900" step="0.01" required>
+      </div>
+      <div class="input-group">
+        <label for="topThickness">Толщина столешницы (мм):</label>
+        <input type="number" id="topThickness" value="20" step="0.01" required>
+      </div>
+      <div class="input-group">
+        <label for="tableHeight">Высота стола (мм):</label>
+        <input type="number" id="tableHeight" value="748" step="0.01" required>
+      </div>
+      <div class="input-group">
+        <label for="baseDiameter">Диаметр подстолья (мм):</label>
+        <input type="number" id="baseDiameter" value="400" step="0.01" required>
+      </div>
 
-            <div class="input-group">
-                <label for="railWidth">Ширина реек (мм):</label>
-                <input type="number" id="railWidth" value="30" step="0.01" required>
-            </div>
-            <div class="input-group">
-                <label for="railThickness">Толщина реек (мм):</label>
-                <input type="number" id="railThickness" value="12.8" step="0.01" required>
-            </div>
-            <div class="input-group">
-                <label for="railGap">Расстояние между рейками (мм):</label>
-                <input type="number" id="railGap" value="5.00" step="0.01" required>
-                <small>Зазор между соседними рейками по окружности.</small>
-            </div>
+      <div class="input-group">
+        <label for="beamWidth">Ширина основных брусков (мм):</label>
+        <input type="number" id="beamWidth" value="40" step="0.01" required>
+      </div>
+      <div class="input-group">
+        <label for="beamThickness">Толщина основных брусков (мм):</label>
+        <input type="number" id="beamThickness" value="40" step="0.01" required>
+      </div>
 
-            <div class="input-group">
-                <label for="cutterDiameter">Диаметр фрезы (мм):</label>
-                <input type="number" id="cutterDiameter" value="6" step="0.01" required>
-            </div>
+      <div class="input-group">
+        <label for="railWidth">Ширина реек (мм):</label>
+        <input type="number" id="railWidth" value="30" step="0.01" required>
+      </div>
+      <div class="input-group">
+        <label for="railThickness">Толщина реек (мм):</label>
+        <input type="number" id="railThickness" value="12.8" step="0.01" required>
+      </div>
+      <div class="input-group">
+        <label for="railGap">Расстояние между рейками (мм):</label>
+        <input type="number" id="railGap" value="5.00" step="0.01" required>
+      </div>
 
-            <!-- Зазор ленты ДВП (может быть отрицательным для натяжки) -->
-            <div class="input-group">
-                <label for="fiberboardGap">Зазор ленты ДВП (мм):</label>
-                <input type="number" id="fiberboardGap" value="-0.50" step="0.01" required>
-                <small>Отрицательное значение — лента короче, чтобы натянуть без нахлёста.</small>
-            </div>
+      <div class="input-group">
+        <label for="cutterDiameter">Диаметр фрезы (мм):</label>
+        <input type="number" id="cutterDiameter" value="6" step="0.01" required>
+      </div>
 
-            <div class="input-group">
-                <label for="topMaterial">Материал столешницы:</label>
-                <select id="topMaterial">
-                    <option value="oak">Дуб</option>
-                    <option value="beech">Бук</option>
-                    <option value="ash">Ясень</option>
-                    <option value="plywood">Фанера</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label for="railMaterial">Материал реек/брусков:</label>
-                <select id="railMaterial">
-                    <option value="beech">Бук</option>
-                    <option value="oak">Дуб</option>
-                    <option value="pine">Сосна</option>
-                </select>
-            </div>
+      <div class="input-group">
+        <label for="fiberboardGap">Зазор ленты ДВП (мм):</label>
+        <input type="number" id="fiberboardGap" value="-0.50" step="0.01" required>
+        <small>Отрицательное значение — лента короче, чтобы натянуть без нахлёста.</small>
+      </div>
 
-            <button type="submit">Рассчитать</button>
-        </form>
+      <div class="input-group">
+        <label for="topMaterial">Материал столешницы:</label>
+        <select id="topMaterial">
+          <option value="oak">Дуб</option>
+          <option value="beech">Бук</option>
+          <option value="ash">Ясень</option>
+          <option value="plywood">Фанера</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="railMaterial">Материал реек/брусков:</label>
+        <select id="railMaterial">
+          <option value="beech">Бук</option>
+          <option value="oak">Дуб</option>
+          <option value="pine">Сосна</option>
+        </select>
+      </div>
 
-        <!-- ВИД СВЕРХУ -->
-        <div class="preview">
-          <h2>Вид сверху (схема)</h2>
-          <svg id="topView" width="100%" height="420" viewBox="-210 -210 420 420"
-               style="background:#f7f9fb;border:1px solid #e4e7eb;border-radius:8px"></svg>
-          <div style="font-size:12px;opacity:.8;margin-top:8px">
-            <span style="display:inline-block;width:12px;height:12px;background:#c8d7ff;border:1px solid #5b7cff;margin-right:6px"></span> Фанера
-            &nbsp; <span style="display:inline-block;width:12px;height:12px;background:#ffe6b3;border:1px solid #d4a200;margin:0 6px 0 16px"></span> Рейки
-            &nbsp; <span style="display:inline-block;width:12px;height:12px;background:#ffd1d1;border:1px solid #cc5c5c;margin:0 6px 0 16px"></span> Паз (фреза)
-            &nbsp; <span style="display:inline-block;width:12px;height:12px;background:#c9f2d1;border:1px solid #3fa66e;margin:0 6px 0 16px"></span> ДВП
-            &nbsp; <span style="display:inline-block;width:12px;height:12px;background:#bbb;border:1px solid #666;margin:0 6px 0 16px"></span> Основные бруски
-            &nbsp; <span style="display:inline-block;width:12px;height:12px;background:#999;border:1px solid #333;margin:0 6px 0 16px"></span> Поперечина
-          </div>
+      <button type="submit">Рассчитать</button>
+    </form>
+
+    <div class="grid" style="margin-top:16px">
+      <!-- Основной вид сверху -->
+      <div class="card">
+        <h2>Вид сверху (схема)</h2>
+        <svg id="topView" width="100%" height="420" viewBox="-210 -210 420 420"></svg>
+        <div class="legend">
+          <span><i class="sw" style="background:#c8d7ff;border-color:#5b7cff"></i>Фанера</span>
+          <span><i class="sw" style="background:#ffe6b3;border-color:#d4a200"></i>Рейки</span>
+          <span><i class="sw" style="background:#ffd1d1;border-color:#cc5c5c"></i>Паз (фреза)</span>
+          <span><i class="sw" style="background:#c9f2d1;border-color:#3fa66e"></i>ДВП</span>
+          <span><i class="sw" style="background:#bbb;border-color:#666"></i>Основные бруски</span>
+          <span><i class="sw" style="background:#999;border-color:#333"></i>Поперечина</span>
         </div>
+      </div>
 
-        <div id="results" class="results hidden">
-            <h2>Результаты расчётов</h2>
-            <p><strong>Паз на нижней крышке:</strong></p>
-            <p>Внешний диаметр: <span id="grooveOuterDiam"></span> мм</p>
-            <p>Внутренний диаметр: <span id="grooveInnerDiam"></span> мм</p>
-            <p>Внутренний радиус: <span id="grooveInnerRadius"></span> мм</p>
+      <!-- Детали: рейка и брусок -->
+      <div class="card mini">
+        <h3>Рейка (увеличено)</h3>
+        <svg id="railDetail" width="100%" height="160" viewBox="0 0 320 160"></svg>
 
-            <p><strong>Крышка Б:</strong></p>
-            <p>Диаметр: <span id="coverBDiam"></span> мм</p>
-
-            <p><strong>Промежуточная крышка:</strong></p>
-            <p>Диаметр: <span id="midCoverDiam"></span> мм</p>
-
-            <p><strong>Лист ДВП:</strong></p>
-            <p>Длина: <span id="fiberboardLength"></span> мм</p>
-            <p>Высота: <span id="fiberboardHeight"></span> мм</p>
-
-            <p><strong>Основные бруски (4 шт):</strong></p>
-            <p>Высота: <span id="mainBeamHeight"></span> мм</p>
-
-            <p><strong>Поперечные бруски (2 шт):</strong></p>
-            <p>Длина поперечины: <span id="crossBeamLength"></span> мм</p>
-
-            <p><strong>Рейки:</strong></p>
-            <p>По вашим размерам поместится: <span id="railCount"></span> шт</p>
-            <p>Остаток (между последней и первой): <span id="railLeftover"></span> мм</p>
-            <p>Рекомендуемая ширина рейки (для этого зазора): <span id="railSuggestedWidth"></span> мм</p>
-            <p>Высота: <span id="railHeight"></span> мм</p>
-
-            <p><strong>Вес:</strong></p>
-            <p>Общий вес стола: <span id="totalWeight"></span> кг</p>
-            <p>Вес столешницы: <span id="topWeight"></span> кг</p>
-            <p>Вес подстолья: <span id="baseWeight"></span> кг</p>
-        </div>
+        <h3>Основной брусок (увеличено)</h3>
+        <svg id="beamDetail" width="100%" height="180" viewBox="0 0 320 180"></svg>
+      </div>
     </div>
 
-    <script src="script.js"></script>
+    <div id="results" class="results hidden" style="margin-top:16px">
+      <h2>Результаты расчётов</h2>
+      <p><strong>Паз на нижней крышке:</strong></p>
+      <p>Внешний диаметр: <span id="grooveOuterDiam"></span> мм</p>
+      <p>Внутренний диаметр: <span id="grooveInnerDiam"></span> мм</p>
+      <p>Внутренний радиус: <span id="grooveInnerRadius"></span> мм</p>
+
+      <p><strong>Крышка Б:</strong></p>
+      <p>Диаметр: <span id="coverBDiam"></span> мм</p>
+
+      <p><strong>Промежуточная крышка:</strong></p>
+      <p>Диаметр: <span id="midCoverDiam"></span> мм</p>
+
+      <p><strong>Лист ДВП:</strong></p>
+      <p>Длина: <span id="fiberboardLength"></span> мм</p>
+      <p>Высота: <span id="fiberboardHeight"></span> мм</p>
+
+      <p><strong>Основные бруски (4 шт):</strong></p>
+      <p>Высота: <span id="mainBeamHeight"></span> мм</p>
+
+      <p><strong>Поперечные бруски (2 шт):</strong></p>
+      <p>Длина поперечины: <span id="crossBeamLength"></span> мм</p>
+
+      <p><strong>Рейки:</strong></p>
+      <p>По вашим размерам поместится: <span id="railCount"></span> шт</p>
+      <p>Остаток (между последней и первой): <span id="railLeftover"></span> мм</p>
+      <p>Рекомендуемая ширина рейки (для этого зазора): <span id="railSuggestedWidth"></span> мм</p>
+      <p>Высота: <span id="railHeight"></span> мм</p>
+
+      <p><strong>Вес:</strong></p>
+      <p>Общий вес стола: <span id="totalWeight"></span> кг</p>
+      <p>Вес столешницы: <span id="topWeight"></span> кг</p>
+      <p>Вес подстолья: <span id="baseWeight"></span> кг</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
