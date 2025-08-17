@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableHeight    = parseFloat(document.getElementById('tableHeight').value);
     const baseDiameter   = parseFloat(document.getElementById('baseDiameter').value);
 
-    const beamWidth      = parseFloat(document.getElementById('beamWidth').value);     // ширина бруска (по касательной)
-    const beamThickness  = parseFloat(document.getElementById('beamThickness').value); // толщина бруска (по радиусу)
+    const beamWidth      = parseFloat(document.getElementById('beamWidth').value);
+    const beamThickness  = parseFloat(document.getElementById('beamThickness').value);
 
     const railWidth      = parseFloat(document.getElementById('railWidth').value);
     const railThickness  = parseFloat(document.getElementById('railThickness').value);
@@ -33,19 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ---- Константы ----
-    const plywoodThickness    = 15;   // фанера (крышки), мм
-    const fiberboardThickness = 3.2;  // ДВП, мм
-    const grooveDepth         = 6;    // глубина паза, мм
-    const crossBeamSize       = 40;   // поперечина 40×40 (сечение), мм
+    const plywoodThickness    = 15;   // фанера (крышки)
+    const fiberboardThickness = 3.2;  // ДВП
+    const grooveDepth         = 6;    // глубина паза
+    const crossBeamSize       = 40;   // поперечина 40×40
 
     // Плотности (кг/м³)
     const densities = {
-      beech:      680,
-      oak:        700,
-      ash:        680,
-      plywood:    600,
-      pine:       500,
-      fiberboard: 800,
+      beech: 680, oak: 700, ash: 680, plywood: 600, pine: 500, fiberboard: 800
     };
 
     // ---- Паз и крышки (снаружи внутрь: рейка -> паз(фреза) -> ДВП -> брусок) ----
@@ -55,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const lidDiameter = grooveInnerDiameter;
 
+    // Промежуточная крышка
     const roundUp5 = mm => Math.ceil(mm / 5) * 5;
     const intermediateDiameter = roundUp5(Math.max(baseDiameter * 1.15, topDiameter * 0.55));
 
@@ -64,29 +60,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const fiberboardHeight = tableHeight - topThickness - 2 * plywoodThickness + grooveDepth;
 
     // ---- Основные бруски / рейки ----
-    const mainBeamHeight  = tableHeight - topThickness - 3 * plywoodThickness; // 4 шт
+    const mainBeamHeight  = tableHeight - topThickness - 3 * plywoodThickness;
     const railHeight      = tableHeight - topThickness - 2 * plywoodThickness;
 
-    // Раскладка реек
-    const circumference   = Math.PI * baseDiameter;
-    const desiredPitch    = railWidth + railGap;
-    const railCountDry    = Math.max(1, Math.floor(circumference / desiredPitch));
-    const leftover        = circumference - railCountDry * desiredPitch;
-    let railSuggestedWidth = (circumference - railCountDry * railGap) / railCountDry;
+    // Окружность реек — по центру зоны реек (ВАЖНО: и расчёт, и отрисовка по одному и тому же радиусу)
+    const R_base_out   = baseDiameter / 2;
+    const R_rail_in    = R_base_out - railThickness;
+    const R_rails_center = (R_base_out + R_rail_in) / 2;                 // радиус центра реек
+    const circumferenceCenter = 2 * Math.PI * R_rails_center;            // длина окружности на этом радиусе
+
+    const desiredPitch  = railWidth + railGap;                            // шаг «рейка+зазор»
+    const railCountDry  = Math.max(1, Math.floor(circumferenceCenter / desiredPitch));
+    const leftover      = circumferenceCenter - railCountDry * desiredPitch; // остаток по дуге между последней и первой
+
+    // Рекомендуемая ширина при заданном зазоре и том же количестве
+    let railSuggestedWidth = (circumferenceCenter - railCountDry * railGap) / railCountDry;
     if (!Number.isFinite(railSuggestedWidth) || railSuggestedWidth < 0) railSuggestedWidth = 0;
 
-    // ---- Поперечина и положение брусков — касание углами внутреннего диаметра паза ----
-    // центр бруска на радиусе rCenter = sqrt(R_in^2 - (W/2)^2) - T/2
+    // ---- Поперечина и положение брусков — угол бруска касается внутренней окружности паза ----
     const Rin = innerRadius;
-    const rCenter = Math.sqrt(Math.max(0, Rin*Rin - (beamWidth/2)**2)) - beamThickness/2;
-
-    // длина поперечины между внутренними гранями:
+    const rCenter = Math.sqrt(Math.max(0, Rin*Rin - (beamWidth/2)**2)) - beamThickness/2; // центр бруска
     let crossBeamLength = 2 * (Math.sqrt(Math.max(0, Rin*Rin - (beamWidth/2)**2)) - beamThickness);
     if (!Number.isFinite(crossBeamLength) || crossBeamLength < 0) crossBeamLength = 0;
 
     // ---- Объёмы и веса ----
     const mm3_to_m3 = v => v / 1e9;
-
     const topVolume = Math.PI * Math.pow(topDiameter / 2, 2) * topThickness;
     const topWeight = mm3_to_m3(topVolume) * (densities[topMaterial] || 650);
 
@@ -98,9 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const fiberboardVolume = fiberboardLength * fiberboardHeight * fiberboardThickness;
     const fiberboardWeight = mm3_to_m3(fiberboardVolume) * densities.fiberboard;
 
-    const mainBeamsVolume = (beamWidth * beamThickness * mainBeamHeight) * 4;
+    const mainBeamsVolume  = (beamWidth * beamThickness * mainBeamHeight) * 4;
     const crossBeamsVolume = (crossBeamSize * crossBeamSize * crossBeamLength) * 2;
-    const railsVolume = (railWidth * railThickness * railHeight) * railCountDry;
+    const railsVolume      = (railWidth * railThickness * railHeight) * railCountDry;
 
     const beamsVolumeAll = mainBeamsVolume + crossBeamsVolume + railsVolume;
     const beamsWeight    = mm3_to_m3(beamsVolumeAll) * (densities[railMaterial] || densities.pine);
@@ -146,16 +144,15 @@ document.addEventListener('DOMContentLoaded', () => {
       cutterDiameter, fiberboardThickness,
       beamWidth, beamThickness,
       crossBeamSize, crossBeamLength,
-      fiberboardOuterDiameter, railCountDry,
-      rCenter, Rin
+      fiberboardOuterDiameter,
+      railCountDry,
+      rCenter, Rin,
+      leftover, railSuggestedWidth
     });
-
-    renderRailDetail({ railWidth, railThickness });
-    renderBeamDetail({ beamWidth, beamThickness });
   });
 });
 
-/* ======= SVG helpers ======= */
+/* ======= SVG отрисовка ======= */
 function renderTopView(p) {
   const {
     baseDiameter, railThickness, railWidth, railGap,
@@ -179,10 +176,12 @@ function renderTopView(p) {
   const R_fiber_in   = R_groove_in;
   const R_fiber_out  = fiberboardOuterDiameter / 2;
 
+  // Масштаб
   const maxR = Math.max(R_base_out, R_fiber_out);
   const pad = 10;
   const scale = 200 / (maxR + pad);
 
+  // helpers
   const add = (el)=>svg.appendChild(el);
   const G = (attrs={}) => { const g=document.createElementNS(NS,'g'); for(const k in attrs) g.setAttribute(k,attrs[k]); return g; };
   const circle = (r,fill,stroke)=>{ const c=document.createElementNS(NS,'circle'); c.setAttribute('cx',0);c.setAttribute('cy',0);c.setAttribute('r',r*scale); if(fill)c.setAttribute('fill',fill); if(stroke)c.setAttribute('stroke',stroke); return c; };
@@ -199,7 +198,6 @@ function renderTopView(p) {
     return l;
   };
   const dim = (x1,y1,x2,y2,off,label)=>{
-    // простая размерная линия с стрелками
     add(line(x1,y1+off,x2,y2+off,'#888',1,null));
     add(line(x1,y1,x1,y1+off,'#888',1,null));
     add(line(x2,y2,x2,y2+off,'#888',1,null));
@@ -213,6 +211,10 @@ function renderTopView(p) {
     add(t);
   };
 
+  // фон, оси
+  add(line(-R_base_out*1.1,0,R_base_out*1.1,0));
+  add(line(0,-R_base_out*1.1,0,R_base_out*1.1));
+
   // фанера
   add(circle(R_base_out,'#c8d7ff','#5b7cff'));
   // зона реек
@@ -222,11 +224,10 @@ function renderTopView(p) {
   // ДВП
   add(ring(R_fiber_out,R_fiber_in,'#c9f2d1','#3fa66e'));
 
-  // Рейки поштучно
-  const N = railCountDry;
+  // Рейки поштучно — шаг по окружности центра реек
   const R_rails_center = (R_base_out + R_rail_in)/2;
   const stepAngle = (railWidth + railGap) / R_rails_center; // рад
-  for (let i=0;i<N;i++){
+  for (let i=0;i<railCountDry;i++){
     const a = i*stepAngle;
     const gr = G({transform:`rotate(${a*180/Math.PI}) translate(${R_rails_center*scale},0) rotate(90)`});
     const r = rect(railWidth, railThickness, '#ffe6b3', '#d4a200');
@@ -234,7 +235,7 @@ function renderTopView(p) {
     add(gr);
   }
 
-  // Основные бруски (0/90/180/270), без поворота — ширина по касательной, толщина по радиусу
+  // Основные бруски (0/90/180/270), без поворота
   const beamFill='#bbb', beamStroke='#666';
   [0, 90, 180, 270].forEach(deg=>{
     const a = (deg*Math.PI)/180;
@@ -248,71 +249,91 @@ function renderTopView(p) {
   // Поперечина — горизонтально по центру
   add(rect(crossBeamLength, crossBeamSize, '#999', '#333'));
 
-  // оси
-  add(line(-R_base_out*1.1,0,R_base_out*1.1,0));
-  add(line(0,-R_base_out*1.1,0,R_base_out*1.1));
+  // ---- Размер поперечины — опустил ниже планки ----
+  const dimOffset = (beamThickness/2) + 8; // ниже поперечины
+  dim(-crossBeamLength/2, 0, crossBeamLength/2, 0, dimOffset, `L = ${crossBeamLength.toFixed(2)} мм`);
 
-  // размер поперечины
-  const yDim = (beamThickness/2 + (rCenter - (Rin - Math.sqrt(Math.max(0,Rin*Rin - (beamWidth/2)**2))))) || 0;
-  const off = - (R_fiber_in + 6); // вывести подпись внутри, ближе к пазу
-  dim(-crossBeamLength/2,0, crossBeamLength/2,0, off, `L = ${crossBeamLength.toFixed(2)} мм`);
+  // ---- Мини-превью деталей в правом нижнем углу основной схемы ----
+  drawMiniParts(svg, scale, R_base_out, {
+    railWidth, railThickness, beamWidth, beamThickness
+  });
 }
 
-/* деталь рейки с размерами */
-function renderRailDetail({railWidth, railThickness}) {
-  const svg = document.getElementById('railDetail'); if (!svg) return;
-  while (svg.firstChild) svg.removeChild(svg.firstChild);
+// мини-превью рейки и бруска в углу основного SVG
+function drawMiniParts(svg, scale, R_base_out, dims){
   const NS='http://www.w3.org/2000/svg';
-  const add = el => svg.appendChild(el);
-  const rect = (x,y,w,h,fill,stroke)=>{ const r=document.createElementNS(NS,'rect'); r.setAttribute('x',x); r.setAttribute('y',y); r.setAttribute('width',w); r.setAttribute('height',h); r.setAttribute('fill',fill); r.setAttribute('stroke',stroke); r.setAttribute('rx',3); r.setAttribute('ry',3); return r; };
-  const line = (x1,y1,x2,y2)=>{ const l=document.createElementNS(NS,'line'); l.setAttribute('x1',x1); l.setAttribute('y1',y1); l.setAttribute('x2',x2); l.setAttribute('y2',y2); l.setAttribute('stroke','#888'); l.setAttribute('stroke-width','1'); return l; };
-  const text = (x,y,str)=>{ const t=document.createElementNS(NS,'text'); t.setAttribute('x',x); t.setAttribute('y',y); t.setAttribute('font-size','12'); t.setAttribute('fill','#333'); t.textContent=str; return t; };
+  const add = (el)=>svg.appendChild(el);
 
-  // масштаб: совместим мм ~ пиксели/2, но не менее 1.5x
-  const sx = Math.max(1.5, 120 / Math.max(railWidth, railThickness));
-  const W = railWidth * sx, H = railThickness * sx;
-  const ox = 30, oy = 40;
+  // базовая точка (правый-низ)
+  const bx =  R_base_out * 0.72 * scale;
+  const by =  R_base_out * 0.72 * scale;
 
-  add(rect(ox, oy, W, H, '#ffe6b3', '#d4a200'));
+  // контейнер
+  const g = document.createElementNS(NS,'g');
+  g.setAttribute('transform', `translate(${bx},${by})`);
+  add(g);
 
-  // размеры по ширине
-  add(line(ox, oy+H+18, ox+W, oy+H+18));
-  add(line(ox, oy+H, ox, oy+H+18));
-  add(line(ox+W, oy+H, ox+W, oy+H+18));
-  add(text(ox+W/2-20, oy+H+15, `${railWidth.toFixed(2)} мм`));
+  // фон под превью
+  const bg = document.createElementNS(NS,'rect');
+  bg.setAttribute('x', 0); bg.setAttribute('y', 0);
+  bg.setAttribute('width',  110); bg.setAttribute('height', 90);
+  bg.setAttribute('fill', '#ffffff'); bg.setAttribute('stroke', '#e1e5ea');
+  bg.setAttribute('rx', 6); bg.setAttribute('ry', 6);
+  g.appendChild(bg);
 
-  // размеры по толщине
-  add(line(ox+W+18, oy, ox+W+18, oy+H));
-  add(line(ox+W, oy, ox+W+18, oy));
-  add(line(ox+W, oy+H, ox+W+18, oy+H));
-  add(text(ox+W+22, oy+H/2+4, `${railThickness.toFixed(2)} мм`));
-}
+  // функция рисования детали в пикселях
+  const rectPx = (x,y,w,h,fill,stroke)=>{
+    const r=document.createElementNS(NS,'rect');
+    r.setAttribute('x',x); r.setAttribute('y',y);
+    r.setAttribute('width',w); r.setAttribute('height',h);
+    r.setAttribute('fill',fill); r.setAttribute('stroke',stroke);
+    r.setAttribute('rx',3); r.setAttribute('ry',3);
+    return r;
+  };
+  const linePx = (x1,y1,x2,y2,stroke='#888')=>{
+    const l=document.createElementNS(NS,'line');
+    l.setAttribute('x1',x1); l.setAttribute('y1',y1);
+    l.setAttribute('x2',x2); l.setAttribute('y2',y2);
+    l.setAttribute('stroke',stroke); l.setAttribute('stroke-width','1');
+    return l;
+  };
+  const textPx = (x,y,str)=>{
+    const t=document.createElementNS(NS,'text');
+    t.setAttribute('x',x); t.setAttribute('y',y);
+    t.setAttribute('font-size','10'); t.setAttribute('fill','#333');
+    t.textContent=str; return t;
+  };
 
-/* деталь бруска с размерами */
-function renderBeamDetail({beamWidth, beamThickness}) {
-  const svg = document.getElementById('beamDetail'); if (!svg) return;
-  while (svg.firstChild) svg.removeChild(svg.firstChild);
-  const NS='http://www.w3.org/2000/svg';
-  const add = el => svg.appendChild(el);
-  const rect = (x,y,w,h,fill,stroke)=>{ const r=document.createElementNS(NS,'rect'); r.setAttribute('x',x); r.setAttribute('y',y); r.setAttribute('width',w); r.setAttribute('height',h); r.setAttribute('fill',fill); r.setAttribute('stroke',stroke); r.setAttribute('rx',3); r.setAttribute('ry',3); return r; };
-  const line = (x1,y1,x2,y2)=>{ const l=document.createElementNS(NS,'line'); l.setAttribute('x1',x1); l.setAttribute('y1',y1); l.setAttribute('x2',x2); l.setAttribute('y2',y2); l.setAttribute('stroke','#888'); l.setAttribute('stroke-width','1'); return l; };
-  const text = (x,y,str)=>{ const t=document.createElementNS(NS,'text'); t.setAttribute('x',x); t.setAttribute('y',y); t.setAttribute('font-size','12'); t.setAttribute('fill','#333'); t.textContent=str; return t; };
+  // ---- Рейка (верх превью) ----
+  const rw = dims.railWidth, rt = dims.railThickness;
+  const sR = Math.min(60 / Math.max(rw, rt), 2.0); // маленький масштаб
+  const Wrp = rw * scale * sR, Hrp = rt * scale * sR;
+  const oxR = 12, oyR = 10;
+  g.appendChild(rectPx(oxR, oyR, Wrp, Hrp, '#ffe6b3', '#d4a200'));
+  // размеры
+  g.appendChild(linePx(oxR, oyR+Hrp+10, oxR+Wrp, oyR+Hrp+10));
+  g.appendChild(linePx(oxR, oyR+Hrp,    oxR,      oyR+Hrp+10));
+  g.appendChild(linePx(oxR+Wrp, oyR+Hrp, oxR+Wrp, oyR+Hrp+10));
+  g.appendChild(textPx(oxR+Wrp/2-16, oyR+Hrp+8, `${rw.toFixed(2)} мм`));
 
-  const sx = Math.max(1.5, 120 / Math.max(beamWidth, beamThickness));
-  const W = beamWidth * sx, H = beamThickness * sx;
-  const ox = 30, oy = 50;
+  g.appendChild(linePx(oxR+Wrp+10, oyR, oxR+Wrp+10, oyR+Hrp));
+  g.appendChild(linePx(oxR+Wrp, oyR,    oxR+Wrp+10, oyR));
+  g.appendChild(linePx(oxR+Wrp, oyR+Hrp, oxR+Wrp+10, oyR+Hrp));
+  g.appendChild(textPx(oxR+Wrp+14, oyR+Hrp/2+3, `${rt.toFixed(2)} мм`));
 
-  add(rect(ox, oy, W, H, '#bbb', '#666'));
+  // ---- Брусок (низ превью) ----
+  const bw = dims.beamWidth, bt = dims.beamThickness;
+  const sB = Math.min(60 / Math.max(bw, bt), 2.0);
+  const Wbp = bw * scale * sB, Hbp = bt * scale * sB;
+  const oxB = 12, oyB = 48;
+  g.appendChild(rectPx(oxB, oyB, Wbp, Hbp, '#bbb', '#666'));
+  g.appendChild(linePx(oxB, oyB+Hbp+10, oxB+Wbp, oyB+Hbp+10));
+  g.appendChild(linePx(oxB, oyB+Hbp,    oxB,      oyB+Hbp+10));
+  g.appendChild(linePx(oxB+Wbp, oyB+Hbp, oxB+Wbp, oyB+Hbp+10));
+  g.appendChild(textPx(oxB+Wbp/2-16, oyB+Hbp+8, `${bw.toFixed(2)} мм`));
 
-  // ширина
-  add(line(ox, oy+H+18, ox+W, oy+H+18));
-  add(line(ox, oy+H, ox, oy+H+18));
-  add(line(ox+W, oy+H, ox+W, oy+H+18));
-  add(text(ox+W/2-20, oy+H+15, `${beamWidth.toFixed(2)} мм`));
-
-  // толщина
-  add(line(ox+W+18, oy, ox+W+18, oy+H));
-  add(line(ox+W, oy, ox+W+18, oy));
-  add(line(ox+W, oy+H, ox+W+18, oy+H));
-  add(text(ox+W+22, oy+H/2+4, `${beamThickness.toFixed(2)} мм`));
+  g.appendChild(linePx(oxB+Wbp+10, oyB, oxB+Wbp+10, oyB+Hbp));
+  g.appendChild(linePx(oxB+Wbp, oyB,    oxB+Wbp+10, oyB));
+  g.appendChild(linePx(oxB+Wbp, oyB+Hbp, oxB+Wbp+10, oyB+Hbp));
+  g.appendChild(textPx(oxB+Wbp+14, oyB+Hbp/2+3, `${bt.toFixed(2)} мм`));
 }
